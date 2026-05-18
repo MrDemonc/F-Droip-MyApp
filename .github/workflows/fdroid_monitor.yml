@@ -43,23 +43,23 @@ jobs:
           fi
 
       - name: Send Telegram notification
-      if: ${{ env.STATE != env.PREVIOUS_STATE && env.STATE != 'unknown' }}
-      env:
-        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-        CHAT_ID: ${{ secrets.CHAT_ID }}
+        if: ${{ env.STATE != env.PREVIOUS_STATE && env.STATE != 'unknown' }}
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
 
-      run: |
-        if [ "$STATE" = "success" ]; then
-          MESSAGE="✅ Lune build finished successfully on F-Droid"
-        else
-          MESSAGE="❌ Lune build failed on F-Droid"
-        fi
+        run: |
+          if [ "$STATE" = "success" ]; then
+            MESSAGE="✅ Lune build finished successfully on F-Droid"
+          else
+            MESSAGE="❌ Lune build failed on F-Droid"
+          fi
 
-        curl -s \
-          -X POST \
-          "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
-          -d chat_id="$CHAT_ID" \
-          -d text="$MESSAGE"
+          curl -s \
+            -X POST \
+            "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
+            -d chat_id="$CHAT_ID" \
+            -d text="$MESSAGE"
 
       - name: Save current state
         run: |
