@@ -2,7 +2,7 @@ name: F-Droid Result Monitor
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/20 * * * *"
 
   workflow_dispatch:
 
@@ -15,14 +15,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Restore previous state
         run: |
           if [ -f .fdroid_state ]; then
             echo "PREVIOUS_STATE=$(cat .fdroid_state)" >> $GITHUB_ENV
           else
-            echo "PREVIOUS_STATE=unknown" >> $GITHUB_ENV
+            echo "PREVIOUS_STATE=none" >> $GITHUB_ENV
           fi
 
       - name: Check F-Droid result
@@ -39,11 +39,11 @@ jobs:
             echo "STATE=success" >> $GITHUB_ENV
 
           else
-            echo "STATE=unknown" >> $GITHUB_ENV
+            echo "STATE=none" >> $GITHUB_ENV
           fi
 
       - name: Send Telegram notification
-        if: ${{ env.STATE != env.PREVIOUS_STATE && env.STATE != 'unknown' }}
+        if: ${{ env.STATE != env.PREVIOUS_STATE }}
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
@@ -51,8 +51,12 @@ jobs:
         run: |
           if [ "$STATE" = "success" ]; then
             MESSAGE="✅ Lune build finished successfully on F-Droid"
-          else
+
+          elif [ "$STATE" = "failed" ]; then
             MESSAGE="❌ Lune build failed on F-Droid"
+
+          else
+            MESSAGE="⏳ Lune build has not appeared yet on F-Droid"
           fi
 
           curl -s \
