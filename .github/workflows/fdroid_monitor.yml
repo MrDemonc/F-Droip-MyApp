@@ -32,10 +32,10 @@ jobs:
 
           PAGE=$(curl -s "$URL")
 
-          if echo "$PAGE" | grep -A 50 "Failed builds" | grep -q "$PACKAGE"; then
+          if echo "$PAGE" | grep -A 50 "Failed builds" | grep -Eq "${PACKAGE}:[0-9]+"; then
             echo "STATE=failed" >> $GITHUB_ENV
 
-          elif echo "$PAGE" | grep -A 50 "Successful builds" | grep -q "$PACKAGE"; then
+          elif echo "$PAGE" | grep -A 50 "Successful builds" | grep -Eq "${PACKAGE}:[0-9]+"; then
             echo "STATE=success" >> $GITHUB_ENV
 
           else
