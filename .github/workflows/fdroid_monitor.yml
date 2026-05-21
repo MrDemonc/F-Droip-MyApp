@@ -32,11 +32,14 @@ jobs:
 
           PAGE=$(curl -s "$URL")
 
-          if echo "$PAGE" | grep -A 50 "Failed builds" | grep -Eq "${PACKAGE}:[0-9]+"; then
+          if echo "$PAGE" | grep -A 500 "Failed builds" | grep -Eq "${PACKAGE}:[0-9]+"; then
             echo "STATE=failed" >> $GITHUB_ENV
 
-          elif echo "$PAGE" | grep -A 50 "Successful builds" | grep -Eq "${PACKAGE}:[0-9]+"; then
+          elif echo "$PAGE" | grep -A 500 "Successful builds" | grep -Eq "${PACKAGE}:[0-9]+"; then
             echo "STATE=success" >> $GITHUB_ENV
+
+          elif echo "$PAGE" | grep -Eq "${PACKAGE}:[0-9]+"; then
+            echo "STATE=running" >> $GITHUB_ENV
 
           else
             echo "STATE=none" >> $GITHUB_ENV
@@ -50,12 +53,8 @@ jobs:
         run: |
           SEND_MESSAGE=false
 
-          if [ "$STATE" = "none" ]; then
-            MESSAGE="⏳ Lune build has not appeared yet on F-Droid"
-            SEND_MESSAGE=true
-
-          elif [ "$STATE" = "success" ] && [ "$PREVIOUS_STATE" != "success" ]; then
-            MESSAGE="✅ Lune build finished successfully on F-Droid"
+          if [ "$STATE" = "running" ] && [ "$PREVIOUS_STATE" != "running" ]; then
+            MESSAGE="🔄 Lune build is currently running on F-Droid"
             SEND_MESSAGE=true
 
           elif [ "$STATE" = "failed" ] && [ "$PREVIOUS_STATE" != "failed" ]; then
