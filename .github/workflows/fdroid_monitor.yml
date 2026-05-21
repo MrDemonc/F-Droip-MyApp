@@ -64,6 +64,10 @@ jobs:
             MESSAGE="🔄 Lune build is currently running on F-Droid"
             SEND_MESSAGE=true
 
+          elif [ "$STATE" = "success" ] && [ "$PREVIOUS_STATE" != "success" ]; then
+            MESSAGE="✅ Lune build finished successfully on F-Droid"
+            SEND_MESSAGE=true
+
           elif [ "$STATE" = "failed" ] && [ "$PREVIOUS_STATE" != "failed" ]; then
             MESSAGE="❌ Lune build failed on F-Droid"
             SEND_MESSAGE=true
@@ -79,7 +83,7 @@ jobs:
 
       - name: Save current state
         run: |
-          echo "$STATE" > .fdroid_state
+          echo "${{ steps.fdroid.outputs.state }}" > .fdroid_state
 
       - name: Commit state
         run: |
