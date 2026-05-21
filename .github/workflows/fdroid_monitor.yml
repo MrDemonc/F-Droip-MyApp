@@ -24,8 +24,9 @@ jobs:
           else
             echo "PREVIOUS_STATE=none" >> $GITHUB_ENV
           fi
-
+          
       - name: Check F-Droid result
+        id: fdroid
         run: |
           URL="https://monitor.f-droid.org/builds/running"
           PACKAGE="com.demonlab.lune"
