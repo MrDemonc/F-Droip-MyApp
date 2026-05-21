@@ -42,8 +42,11 @@ jobs:
             echo "STATE=running" >> $GITHUB_ENV
 
           else
-            echo "STATE=none" >> $GITHUB_ENV
+            STATE="none"
           fi
+
+          echo "STATE=$STATE"
+          echo "state=$STATE" >> $GITHUB_OUTPUT
 
       - name: Send Telegram notification
         env:
