@@ -39,13 +39,15 @@ jobs:
             echo "STATE=success" >> $GITHUB_ENV
 
           elif echo "$PAGE" | grep -Eq "${PACKAGE}:[0-9]+"; then
-            echo "STATE=running" >> $GITHUB_ENV
+            STATE="running"
 
           else
             STATE="none"
           fi
 
           echo "STATE=$STATE"
+
+          echo "STATE=$STATE" >> $GITHUB_ENV
           echo "state=$STATE" >> $GITHUB_OUTPUT
 
       - name: Send Telegram notification
