@@ -52,6 +52,7 @@ jobs:
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
+          STATE: ${{ steps.fdroid.outputs.state }}
 
         run: |
           SEND_MESSAGE=false
